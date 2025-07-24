@@ -9,6 +9,7 @@ import { useAppSelector } from '../store/hooks';
 import { standupSchema, type StandupFormData } from '../lib/validations/standup';
 import { getInitials } from '../utils/strings';
 import { getDateToday } from '../utils/date';
+import { getApiErrorMessage } from '../utils/errors';
 
 interface StandupModalProps {
   isOpen: boolean;
@@ -73,8 +74,8 @@ export function StandupModal({ isOpen, onClose }: StandupModalProps) {
 
   const addTemplate = (template: string, field: 'yesterday' | 'today') => {
     const currentValue = watchedValues[field];
-    const newValue = currentValue ? `${currentValue}, ${template}` : template;
-    setValue(field, newValue);
+    const newValue = currentValue ? `${currentValue} ${template}` : template;
+    setValue(field, newValue, { shouldValidate: true, shouldDirty: true });
   };
 
   if (!isOpen || !user) return null;
@@ -89,7 +90,7 @@ export function StandupModal({ isOpen, onClose }: StandupModalProps) {
 
       {/* Modal */}
       <div
-        className={`fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-out ${
+        className={`fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-out flex flex-col ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -125,10 +126,10 @@ export function StandupModal({ isOpen, onClose }: StandupModalProps) {
         </div>
 
         {/* Form */}
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto p-4 min-h-0">
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-              {'data' in error ? (error.data as any)?.message || 'Failed to submit standup. Please try again.' : 'Failed to submit standup. Please try again.'}
+              {getApiErrorMessage(error)}
             </div>
           )}
 
@@ -234,6 +235,12 @@ export function StandupModal({ isOpen, onClose }: StandupModalProps) {
                   />
                 )}
               />
+            </div>
+
+            {/* Markdown Tips */}
+            <div className="p-3 bg-gray-50 rounded-lg text-xs text-gray-600">
+              <p className="font-medium mb-1">💡 Markdown supported:</p>
+              <p>**bold**, *italic*, `code`, [link](url), - bullet points</p>
             </div>
 
             {/* Submit Button */}

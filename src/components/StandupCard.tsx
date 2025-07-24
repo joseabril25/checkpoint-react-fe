@@ -3,6 +3,7 @@ import { getInitials } from '../utils/strings';
 import { formatDate, getLocalDateString } from '../utils/date';
 import { Avatar } from './ui/Avatar';
 import { Chip } from './ui/Chip';
+import Markdown from 'react-markdown';
 
 
 export const StandupCard = ({ standup }: { standup: Standup }) => {
@@ -51,18 +52,18 @@ export const StandupCard = ({ standup }: { standup: Standup }) => {
       <div className="px-6 pb-6 space-y-3">
         <div className="p-3 rounded-lg">
           <h4 className="text-sm font-medium text-gray-700 mb-1">✅ Yesterday</h4>
-          <p className="text-sm text-gray-600">{standup.yesterday}</p>
+          <Markdown>{standup.yesterday}</Markdown>
         </div>
 
         <div className="p-3  rounded-lg">
           <h4 className="text-sm font-medium text-gray-700 mb-1">🎯 Today</h4>
-          <p className="text-sm text-gray-600">{standup.today}</p>
+          <Markdown>{standup.today}</Markdown>
         </div>
 
         {standup.blockers && (
           <div className="p-3  rounded-lg">
             <h4 className="text-sm font-medium text-gray-700 mb-1">🚧 Blockers</h4>
-            <p className="text-sm text-gray-600">{standup.blockers}</p>
+            <Markdown>{standup.blockers}</Markdown>
           </div>
         )}
       </div>
