@@ -21,7 +21,7 @@ export const BlockersList = ({ standups }: BlockersListProps) => {
         {standups.length > 0 ? (
           <div className="space-y-3">
             {standups.map((standup) => (
-              <div key={standup.id} className="p-3 bg-orange-50 rounded-lg">
+              <div key={standup.id} className="p-3">
                 <div className="flex items-center space-x-2 mb-2">
                   <Avatar
                     src={standup.user?.profileImage}

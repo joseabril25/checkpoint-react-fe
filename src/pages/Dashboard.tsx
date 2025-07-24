@@ -1,11 +1,12 @@
 import { RootLayout } from '../layouts/RootLayout';
 import { Button } from '../components/ui/Button';
+import { DatePicker } from '../components/ui/DatePicker';
+import { Dropdown } from '../components/ui/Dropdown';
 import { StandupCard } from '../components/StandupCard';
 import { PendingMembers } from '../components/PendingMembers';
 import { BlockersList } from '../components/BlockersList';
 import { useGetStandupsQuery } from '../store/api/standups';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
-import type { Standup, StandupStatus } from '../types/apiTypes';
 import { Icons } from '../components/Icons';
 import { openStandupModal } from '../store/slices/standupSlice';
 import { getDateToday } from '../utils/date';
@@ -13,107 +14,55 @@ import { useState } from 'react';
 import { useGetUsersQuery } from '../store/api/users';
 import { QuickStats } from '../components/QuickStats';
 
-// Mock data for now - will be replaced with real API data
-const mockTeamData: Standup[] = [
-  {
-    id: "1",
-    userId: "1",
-    date: new Date("2024-01-15"),
-    yesterday: "Completed user authentication flow and fixed login bugs. Reviewed Mike's PR for the payment system.",
-    today: "Working on dashboard components and API integration. Planning to finish the user profile page design.",
-    blockers: "Need design approval for the new user profile page from the design team",
-    status: "submitted" as StandupStatus,
-    createdAt: new Date("2024-01-15T09:15:00Z"),
-    updatedAt: new Date("2024-01-15T09:15:00Z"),
-    user: {
-      id: "1",
-      name: "Sarah Chen",
-      email: "sarah.chen@example.com",
-      profileImage: "",
-    },
-  },
-  {
-    id: "2",
-    userId: "2",
-    date: new Date("2024-01-15"),
-    yesterday: "Reviewed PRs and deployed hotfix for payment processing. Fixed the database connection timeout issue.",
-    today: "Database optimization and performance testing. Will work on the new API endpoints for notifications.",
-    blockers: "",
-    status: "submitted" as StandupStatus,
-    createdAt: new Date("2024-01-15T08:45:00Z"),
-    updatedAt: new Date("2024-01-15T08:45:00Z"),
-    user: {
-      id: "2",
-      name: "Mike Rodriguez",
-      email: "mike.rodriguez@example.com",
-      profileImage: "",
-    },
-  },
-  {
-    id: "3",
-    userId: "3",
-    date: new Date("2024-01-15"),
-    yesterday: "Finished mobile responsive design for checkout flow. Conducted user testing session with 5 participants.",
-    today: "Starting work on notification system UI. Will create mockups for the new dashboard layout.",
-    blockers: "Waiting for API documentation from backend team for the notification endpoints",
-    status: "submitted" as StandupStatus,
-    createdAt: new Date("2024-01-15T10:30:00Z"),
-    updatedAt: new Date("2024-01-15T10:30:00Z"),
-    user: {
-      id: "3",
-      name: "Alex Kim",
-      email: "alex.kim@example.com",
-      profileImage: "",
-    },
-  },
-  {
-    id: "4",
-    userId: "4",
-    date: new Date("2024-01-15"),
-    yesterday: "Updated documentation and onboarding guides. Fixed several CSS issues on the landing page.",
-    today: "Code review session and working on the component library updates.",
-    blockers: "Need access to the staging environment for testing",
-    status: "submitted" as StandupStatus,
-    createdAt: new Date("2024-01-15T09:45:00Z"),
-    updatedAt: new Date("2024-01-15T09:45:00Z"),
-    user: {
-      id: "4",
-      name: "Lisa Wang",
-      email: "lisa.wang@example.com",
-      profileImage: "",
-    },
-  },
-];
-
-// Mock team members who haven't submitted (for pending list)
-const mockPendingMembers = [
-  {
-    id: "5",
-    name: "Emily Johnson",
-    email: "emily.johnson@example.com",
-    profileImage: "",
-  },
-  {
-    id: "6",
-    name: "David Park",
-    email: "david.park@example.com",
-    profileImage: "",
-  },
-];
-
 export default function DashboardPage() {
   const dispatch = useAppDispatch();
   const [dateQuery, setDateQuery] = useState(new Date().toISOString().split('T')[0]);
-  const { isLoading } = useGetStandupsQuery({ date: dateQuery });
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [selectedUserId, setSelectedUserId] = useState<string>('');
+  
+  const { isLoading, refetch } = useGetStandupsQuery({ 
+    date: dateQuery,
+    userId: selectedUserId || undefined
+  }, {
+    refetchOnMountOrArgChange: true
+  });
   const { isLoading: isUsersLoading } = useGetUsersQuery();
   const { standups, currentStandup } = useAppSelector((state) => state.standup);
   const { users } = useAppSelector((state) => state.users);
+  const { user: currentUser } = useAppSelector((state) => state.auth);
 
-  // find users not in standups
+  // Create user options for dropdown
+  const userOptions = [
+    { value: '', label: 'All Users' },
+    ...users.map(user => ({
+      value: user._id || user.id,
+      label: user.name
+    }))
+  ];
+
+  // find users not in standups (for the selected date)
   const pendingMembers = users.filter((user) => !standups.some((standup) => standup.userId === user._id));
   const membersWithBlockers = standups.filter((standup) => standup.blockers && standup.blockers.length > 0);
   
   const hasSubmittedToday = !!currentStandup;
+
+  // Handle date change
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+    if (date) {
+      const newDateQuery = date.toISOString().split('T')[0];
+      setDateQuery(newDateQuery);
+      // Force refetch if the date is the same (user selected current date again)
+      if (newDateQuery === dateQuery) {
+        refetch();
+      }
+    }
+  };
+
+  // Handle user filter change
+  const handleUserFilterChange = (userId: string) => {
+    setSelectedUserId(userId);
+  };
 
   if (isLoading || isUsersLoading) {
     return (
@@ -135,13 +84,14 @@ export default function DashboardPage() {
               <h1 className="text-2xl font-bold text-gray-900">{getDateToday()}</h1>
             </div>
             <p className="text-gray-600">
-              {standups.length} of {standups.length + standups.length} team members have submitted their standup
+              {standups.length} of {users.length} team members have submitted their standup
             </p>
           </div>
         </div>
 
         {/* Call to Action for Current User */}
-        {!hasSubmittedToday && (
+        {!hasSubmittedToday && currentUser && 
+         (!selectedUserId || selectedUserId === currentUser.id || selectedUserId === currentUser._id) && (
           <div className="mb-6 border-2 border-green-200 bg-gradient-to-r from-green-100 to-blue-100 rounded-xl shadow-sm">
             <div className="p-6">
               <div className="flex items-center justify-between">
@@ -168,9 +118,30 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Left Column - Team Standups (3/4 width) */}
           <div className="lg:col-span-3 space-y-4">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">Today's Standups</h2>
-              {/* Add Filters Here */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">Standups</h2>
+              
+              {/* Filters */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="w-full sm:w-48">
+                  <DatePicker
+                    label=""
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    placeholder="Select date"
+                    dateFormat="dd/MM/yyyy"
+                  />
+                </div>
+                <div className="w-full sm:w-48">
+                  <Dropdown
+                    label=""
+                    options={userOptions}
+                    value={selectedUserId}
+                    onChange={handleUserFilterChange}
+                    placeholder="Filter by user"
+                  />
+                </div>
+              </div>
             </div>
 
             {standups.map((standup) => (
