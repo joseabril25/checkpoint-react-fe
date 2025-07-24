@@ -37,4 +37,4 @@ export const {
   setUser,
 } = authSlice.actions
 
-export const userReducer = authSlice.reducer
+export const authReducer = authSlice.reducer
