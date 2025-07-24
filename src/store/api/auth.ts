@@ -66,7 +66,7 @@ export const authApi = baseApi.injectEndpoints({
         
         return { data: undefined };
       },
-      invalidatesTags: ['Auth', 'User'],
+      invalidatesTags: ['Auth'],
     }),
     me: builder.query<ApiResponse, void>({
       queryFn: async (_, api, extraOptions) => {

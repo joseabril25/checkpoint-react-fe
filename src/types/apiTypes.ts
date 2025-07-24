@@ -37,6 +37,7 @@ export const StandupOrderField = {
 // ===========================
 
 export interface BaseEntity {
+  _id?: string; // MongoDB specific
   id: string;
   createdAt: Date;
   updatedAt: Date;
@@ -254,11 +255,8 @@ export interface StandupState {
   isStandupModalOpen: boolean;
 }
 
-export interface UserState {
+export interface UsersState {
   users: User[];
-  currentUser: User | null;
-  isLoading: boolean;
-  error: string | null;
 }
 
 // ===========================

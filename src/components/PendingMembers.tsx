@@ -12,7 +12,7 @@ interface PendingMembersProps {
 
 export const PendingMembers = ({ pendingMembers }: PendingMembersProps) => {
   return (
-    <div className="border-0 shadow-xl bg-white/90 backdrop-blur-sm rounded-2xl">
+    <div className="border-0 shadow-xl bg-white/90 backdrop-blur-sm rounded-2xl hover:shadow-2xl transition-all duration-200">
       <div className="p-4 pb-3">
         <h3 className="text-lg font-semibold flex items-center">
           <svg className="w-4 h-4 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -25,7 +25,7 @@ export const PendingMembers = ({ pendingMembers }: PendingMembersProps) => {
         {pendingMembers.length > 0 ? (
           <div className="space-y-3">
             {pendingMembers.map((member) => (
-              <div key={member.id} className="flex items-center space-x-3 p-2 bg-yellow-50 rounded-lg">
+              <div key={member.id} className="flex items-center space-x-3 p-2">
                 <Avatar
                   src={member.profileImage}
                   alt={member.name}
@@ -35,7 +35,6 @@ export const PendingMembers = ({ pendingMembers }: PendingMembersProps) => {
                 />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">{member.name}</p>
-                  <p className="text-xs text-gray-500">Not submitted</p>
                 </div>
               </div>
             ))}

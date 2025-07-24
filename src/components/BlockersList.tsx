@@ -8,7 +8,7 @@ interface BlockersListProps {
 
 export const BlockersList = ({ standups }: BlockersListProps) => {
   return (
-    <div className="border-0 shadow-xl bg-white/90 backdrop-blur-sm rounded-2xl">
+    <div className="border-0 shadow-xl bg-white/90 backdrop-blur-sm rounded-2xl hover:shadow-2xl transition-all duration-200">
       <div className="p-4 pb-3">
         <h3 className="text-lg font-semibold flex items-center">
           <svg className="w-4 h-4 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

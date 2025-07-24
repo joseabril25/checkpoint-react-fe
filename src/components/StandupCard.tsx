@@ -44,18 +44,18 @@ export const StandupCard = ({ standup }: { standup: Standup }) => {
       </div>
 
       <div className="px-6 pb-6 space-y-3">
-        <div className="p-3 bg-blue-50 rounded-lg">
+        <div className="p-3 rounded-lg">
           <h4 className="text-sm font-medium text-gray-700 mb-1">✅ Yesterday</h4>
           <p className="text-sm text-gray-600">{standup.yesterday}</p>
         </div>
 
-        <div className="p-3 bg-green-50 rounded-lg">
+        <div className="p-3  rounded-lg">
           <h4 className="text-sm font-medium text-gray-700 mb-1">🎯 Today</h4>
           <p className="text-sm text-gray-600">{standup.today}</p>
         </div>
 
         {standup.blockers && (
-          <div className="p-3 bg-orange-50 rounded-lg">
+          <div className="p-3  rounded-lg">
             <h4 className="text-sm font-medium text-gray-700 mb-1">🚧 Blockers</h4>
             <p className="text-sm text-gray-600">{standup.blockers}</p>
           </div>

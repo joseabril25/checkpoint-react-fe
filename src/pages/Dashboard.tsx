@@ -10,6 +10,8 @@ import { Icons } from '../components/Icons';
 import { openStandupModal } from '../store/slices/standupSlice';
 import { getDateToday } from '../utils/date';
 import { useState } from 'react';
+import { useGetUsersQuery } from '../store/api/users';
+import { QuickStats } from '../components/QuickStats';
 
 // Mock data for now - will be replaced with real API data
 const mockTeamData: Standup[] = [
@@ -103,16 +105,17 @@ export default function DashboardPage() {
   const dispatch = useAppDispatch();
   const [dateQuery, setDateQuery] = useState(new Date().toISOString().split('T')[0]);
   const { isLoading } = useGetStandupsQuery({ date: dateQuery });
+  const { isLoading: isUsersLoading } = useGetUsersQuery();
   const { standups, currentStandup } = useAppSelector((state) => state.standup);
-  
-  // For now using mock data, will replace with real data  
-  const submittedMembers = mockTeamData; // All standups are submitted
-  const pendingMembers = mockPendingMembers; // Separate list of pending members
+  const { users } = useAppSelector((state) => state.users);
+
+  // find users not in standups
+  const pendingMembers = users.filter((user) => !standups.some((standup) => standup.userId === user._id));
   const membersWithBlockers = standups.filter((standup) => standup.blockers && standup.blockers.length > 0);
   
   const hasSubmittedToday = !!currentStandup;
 
-  if (isLoading) {
+  if (isLoading || isUsersLoading) {
     return (
       <RootLayout>
         <div className="flex items-center justify-center h-64">
@@ -196,14 +199,7 @@ export default function DashboardPage() {
             <BlockersList standups={membersWithBlockers} />
 
             {/* Quick Stats */}
-            <div className="bg-gradient-to-br from-purple-100 to-pink-100 border-0 shadow-xl rounded-2xl p-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-gray-900 mb-1">
-                  {Math.round((submittedMembers.length / (submittedMembers.length + pendingMembers.length)) * 100)}%
-                </div>
-                <p className="text-sm text-gray-600">Team Completion</p>
-              </div>
-            </div>
+            <QuickStats standups={standups.length} pendingMembers={pendingMembers.length} />
           </div>
         </div>
 
