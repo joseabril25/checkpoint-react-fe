@@ -9,6 +9,7 @@ import type { Standup, StandupStatus } from '../types/apiTypes';
 import { Icons } from '../components/Icons';
 import { openStandupModal } from '../store/slices/standupSlice';
 import { getDateToday } from '../utils/date';
+import { useState } from 'react';
 
 // Mock data for now - will be replaced with real API data
 const mockTeamData: Standup[] = [
@@ -100,7 +101,8 @@ const mockPendingMembers = [
 
 export default function DashboardPage() {
   const dispatch = useAppDispatch();
-  const { isLoading } = useGetStandupsQuery();
+  const [dateQuery, setDateQuery] = useState(new Date().toISOString().split('T')[0]);
+  const { isLoading } = useGetStandupsQuery({ date: dateQuery });
   const { standups, currentStandup } = useAppSelector((state) => state.standup);
   
   // For now using mock data, will replace with real data  

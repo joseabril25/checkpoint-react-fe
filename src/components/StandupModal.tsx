@@ -244,7 +244,6 @@ export function StandupModal({ isOpen, onClose }: StandupModalProps) {
                 disabled={isLoading || !isValid}
                 variant="primary"
                 size="lg"
-                className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white h-12"
               >
                 {isLoading ? (
                   <div className="flex items-center">
@@ -253,7 +252,7 @@ export function StandupModal({ isOpen, onClose }: StandupModalProps) {
                   </div>
                 ) : (
                   <div className="flex items-center">
-                    Submit Daily Update
+                    Submit
                   </div>
                 )}
               </Button>

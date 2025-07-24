@@ -1,5 +1,6 @@
 import type { Standup } from '../types/apiTypes';
 import { getInitials } from '../utils/strings';
+import { formatDate } from '../utils/date';
 import { Avatar } from './ui/Avatar';
 import { Badge } from './ui/Badge';
 
@@ -19,7 +20,7 @@ export const StandupCard = ({ standup }: { standup: Standup }) => {
             />
             <div>
               <h3 className="font-semibold text-gray-900">{standup.user?.name}</h3>
-              <p className="text-sm text-gray-500">Updated at {standup.createdAt.toLocaleDateString()}</p>
+              <p className="text-sm text-gray-500">Updated at {formatDate(standup.createdAt)}</p>
             </div>
           </div>
 
