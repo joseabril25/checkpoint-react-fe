@@ -6,7 +6,7 @@ import { AuthGuard } from '../guard/AuthGuard';
 const LoginPage = lazy(() => import('../pages/Login'));
 const RegisterPage = lazy(() => import('../pages/Register'));
 const DashboardPage = lazy(() => import('../pages/Dashboard'));
-const StandupsPage = lazy(() => import('../pages/Standups'));
+const HistoryPage = lazy(() => import('../pages/History'));
 const ProfilePage = lazy(() => import('../pages/Profile'));
 
 export const router = createBrowserRouter([
@@ -37,8 +37,8 @@ export const router = createBrowserRouter([
         element: <DashboardPage />,
       },
       {
-        path: 'standups',
-        element: <StandupsPage />,
+        path: 'history',
+        element: <HistoryPage />,
       },
       {
         path: 'profile',

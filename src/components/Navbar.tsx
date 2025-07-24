@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Icons } from './Icons'
 
 export const Navbar = () => {
@@ -9,9 +10,17 @@ export const Navbar = () => {
           <div className='cursor-pointer'>
             <Icons name="menu" color='#fff' width={32} height={32} />
           </div>
-          <h3> Checkpoint</h3>
+          <h3 className='text-white'> Checkpoint</h3>
         </div>
 
+        <nav className="hidden md:flex space-x-6">
+          <Link to="/dashboard" className="text-white hover:text-neutral-900 transition-colors">
+            Dashboard
+          </Link>
+          <Link to="/history" className="text-white hover:text-neutral-900 transition-colors">
+            History
+          </Link>
+        </nav>
         <div className="hidden md:block">
           <div 
             className="bg-white rounded-full p-2 flex items-center justify-center m-w-[32px] cursor-pointer hover:bg-gray-100 transition-colors"

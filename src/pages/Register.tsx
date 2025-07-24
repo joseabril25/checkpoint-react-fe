@@ -15,7 +15,7 @@ export default function RegisterPage() {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<RegisterFormData>({
     resolver: yupResolver(registerSchema),
   });
@@ -115,7 +115,7 @@ export default function RegisterPage() {
 
         <Button
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || !isValid}
           variant="primary"
           size="lg"
           className="w-full"

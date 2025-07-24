@@ -1,4 +1,5 @@
 import { IconAccount } from './icon-account';
+import { IconCalendar } from './icon-calendar';
 import { IconCheck } from './icon-check';
 import { IconClose } from './icon-close';
 import { IconMenu } from './icon-menu';
@@ -25,6 +26,8 @@ export const Icons = ({ name, active, width, height, color }: Props) => {
       return <IconClose active={active || false} color={color} width={width} height={height} />;
     case 'check':
       return <IconCheck active={active || false} color={color} width={width} height={height} />;
+    case 'calendar':
+      return <IconCalendar active={active || false} color={color} width={width} height={height} />;
     default:
       return null;
   }
