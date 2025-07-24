@@ -36,6 +36,7 @@ export function StandupModal({ isOpen, onClose }: StandupModalProps) {
     watch
   } = useForm<StandupFormData>({
     resolver: yupResolver(standupSchema),
+    mode: 'onChange',
     defaultValues: {
       yesterday: '',
       today: '',

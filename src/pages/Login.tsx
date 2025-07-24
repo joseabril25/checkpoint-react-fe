@@ -19,6 +19,7 @@ export default function LoginPage() {
     formState: { errors, isValid },
   } = useForm<LoginFormData>({
     resolver: yupResolver(loginSchema),
+    mode: 'onChange',
   });
 
   const onSubmit = async (data: LoginFormData) => {

@@ -18,6 +18,7 @@ export default function RegisterPage() {
     formState: { errors, isValid },
   } = useForm<RegisterFormData>({
     resolver: yupResolver(registerSchema),
+    mode: 'onChange',
   });
 
   const onSubmit = async (data: RegisterFormData) => {
