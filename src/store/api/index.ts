@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type { RootState } from '../store';
 
 export const baseQuery = fetchBaseQuery({
   baseUrl: '/api/v1',

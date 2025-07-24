@@ -4,7 +4,7 @@ import { Button } from '../components/ui/Button';
 import { StandupCard } from '../components/StandupCard';
 import { PendingMembers } from '../components/PendingMembers';
 import { BlockersList } from '../components/BlockersList';
-import { useGetTodayStandupsQuery } from '../store/api/standups';
+import { useGetStandupsQuery } from '../store/api/standups';
 import { useAppSelector } from '../store/hooks';
 import type { Standup, StandupStatus } from '../types/apiTypes';
 import { Icons } from '../components/Icons';
@@ -99,17 +99,15 @@ const mockPendingMembers = [
 
 export default function DashboardPage() {
   const [isStandupModalOpen, setIsStandupModalOpen] = useState(false);
-  const user = useAppSelector((state) => state.auth.user);
-  const { data: todayStandups = [], isLoading } = useGetTodayStandupsQuery();
+  const { isLoading } = useGetStandupsQuery();
+  const { standups, currentStandup } = useAppSelector((state) => state.standup);
   
   // For now using mock data, will replace with real data  
   const submittedMembers = mockTeamData; // All standups are submitted
   const pendingMembers = mockPendingMembers; // Separate list of pending members
-  const membersWithBlockers = mockTeamData.filter((standup) => standup.blockers && standup.blockers.length > 0);
+  const membersWithBlockers = standups.filter((standup) => standup.blockers && standup.blockers.length > 0);
   
-  // Check if current user has submitted today
-  const currentUserStandup = todayStandups.find(standup => standup.userId === user?.id);
-  const hasSubmittedToday = !!currentUserStandup;
+  const hasSubmittedToday = !!currentStandup;
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -138,7 +136,7 @@ export default function DashboardPage() {
               <h1 className="text-2xl font-bold text-gray-900">{today}</h1>
             </div>
             <p className="text-gray-600">
-              {submittedMembers.length} of {submittedMembers.length + pendingMembers.length} team members have submitted their standup
+              {standups.length} of {standups.length + standups.length} team members have submitted their standup
             </p>
           </div>
         </div>
@@ -176,11 +174,11 @@ export default function DashboardPage() {
               {/* Add Filters Here */}
             </div>
 
-            {submittedMembers.map((standup) => (
+            {standups.map((standup) => (
               <StandupCard key={standup.id} standup={standup} />
             ))}
 
-            {submittedMembers.length === 0 && (
+            {standups.length === 0 && (
               <div className="border-0 shadow-xl bg-white/90 backdrop-blur-sm rounded-2xl">
                 <div className="p-12 text-center">
                   <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

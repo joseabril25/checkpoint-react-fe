@@ -1,4 +1,6 @@
 import { baseApi, baseQuery } from ".";
+import { setStandups, setPagination, setCurrentStandup } from "../slices/standupSlice";
+import type { RootState } from "../store";
 import type { Standup, CreateStandupRequest, StandupQuery, PaginatedApiResponse } from "../../types/apiTypes";
 
 export const standupsApi = baseApi.injectEndpoints({
@@ -6,6 +8,7 @@ export const standupsApi = baseApi.injectEndpoints({
     getStandups: builder.query<PaginatedApiResponse<Standup>, StandupQuery | void>({
       queryFn: async (params, api, extraOptions) => {
         const queryParams = new URLSearchParams();
+        const state = api.getState() as RootState;
         
         if (params) {
           Object.entries(params).forEach(([key, value]) => {
@@ -23,25 +26,19 @@ export const standupsApi = baseApi.injectEndpoints({
           return { error: result.error };
         }
         
-        return { data: result.data as PaginatedApiResponse<Standup> };
-      },
-      providesTags: ['Standups'],
-    }),
-    
-    getTodayStandups: builder.query<Standup[], void>({
-      queryFn: async (_, api, extraOptions) => {
-        const today = new Date().toISOString().split('T')[0];
-        
-        const result = await baseQuery({
-          url: `/standups?date=${today}&limit=100`,
-        }, api, extraOptions);
-        
-        if (result.error) {
-          return { error: result.error };
-        }
-        
         const response = result.data as PaginatedApiResponse<Standup>;
-        return { data: response.data };
+        const currentUserStandup = response.data.find(standup => standup.userId === state.auth.user?.id);
+        
+        // Dispatch actions to update Redux state
+        api.dispatch(setStandups(response.data));
+        api.dispatch(setPagination(response.pagination));
+        if (currentUserStandup) {
+          api.dispatch(setCurrentStandup(currentUserStandup));
+        } else {
+          api.dispatch(setCurrentStandup(null));
+        }
+
+        return { data: response };
       },
       providesTags: ['Standups'],
     }),
@@ -90,7 +87,6 @@ export const standupsApi = baseApi.injectEndpoints({
 
 export const {
   useGetStandupsQuery,
-  useGetTodayStandupsQuery,
   useCreateStandupMutation,
   useGetUserStandupQuery,
 } = standupsApi;
