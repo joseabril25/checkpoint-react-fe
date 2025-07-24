@@ -130,6 +130,7 @@ export default function DashboardPage() {
                     onChange={handleDateChange}
                     placeholder="Select date"
                     dateFormat="dd/MM/yyyy"
+                    maxDate={new Date()}
                   />
                 </div>
                 <div className="w-full sm:w-48">

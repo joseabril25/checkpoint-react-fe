@@ -11,6 +11,8 @@ interface DatePickerProps {
   disabled?: boolean;
   dateFormat?: string;
   className?: string;
+  minDate?: Date;
+  maxDate?: Date;
 }
 
 // Custom input component that matches our form style
@@ -65,7 +67,9 @@ export const DatePicker = ({
   errorMessage,
   disabled,
   dateFormat = "MM/dd/yyyy",
-  className = ''
+  className = '',
+  minDate,
+  maxDate
 }: DatePickerProps) => {
   return (
     <div className={`w-full ${className}`}>
@@ -76,6 +80,8 @@ export const DatePicker = ({
         dateFormat={dateFormat}
         placeholderText={placeholder}
         disabled={disabled}
+        minDate={minDate}
+        maxDate={maxDate}
         customInput={<CustomInput disabled={disabled} error={error} />}
         wrapperClassName="w-full"
         popperClassName="z-50"

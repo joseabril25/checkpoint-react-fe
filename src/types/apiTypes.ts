@@ -257,6 +257,7 @@ export interface StandupState {
 
 export interface UsersState {
   users: User[];
+  userStandups: Standup[];
 }
 
 // ===========================

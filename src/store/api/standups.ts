@@ -2,6 +2,7 @@ import { baseApi, baseQuery } from ".";
 import { setStandups, setPagination, setCurrentStandup } from "../slices/standupSlice";
 import type { RootState } from "../store";
 import type { Standup, CreateStandupRequest, StandupQuery, PaginatedApiResponse } from "../../types/apiTypes";
+import { setUserStandups } from "../slices/userSlice";
 
 export const standupsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -60,14 +61,19 @@ export const standupsApi = baseApi.injectEndpoints({
       invalidatesTags: ['Standups'],
     }),
     
-    getUserStandup: builder.query<Standup | null, { userId?: string; date?: string }>({
-      queryFn: async ({ userId, date }, api, extraOptions) => {
+    getUserStandup: builder.query<Standup | null, StandupQuery | void>({
+      queryFn: async (params, api, extraOptions) => {
         const queryParams = new URLSearchParams();
-        if (userId) queryParams.append('userId', userId);
-        if (date) queryParams.append('date', date);
+        if (params) {
+          Object.entries(params).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+              queryParams.append(key, String(value));
+            }
+          });
+        }
         
         const result = await baseQuery({
-          url: `/standups/user?${queryParams.toString()}`,
+          url: `/standups?${queryParams.toString()}`,
         }, api, extraOptions);
         
         if (result.error) {
@@ -77,6 +83,9 @@ export const standupsApi = baseApi.injectEndpoints({
           }
           return { error: result.error };
         }
+
+        const response = result.data as PaginatedApiResponse<Standup>;
+        api.dispatch(setUserStandups(response.data));
         
         return { data: result.data as Standup };
       },
