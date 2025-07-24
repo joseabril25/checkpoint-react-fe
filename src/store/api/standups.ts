@@ -60,6 +60,23 @@ export const standupsApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ['Standups'],
     }),
+
+    updateStandup: builder.mutation<Standup, { id: string; data: CreateStandupRequest }>({
+      queryFn: async ({ id, data }, api, extraOptions) => {
+        const result = await baseQuery({
+          url: `/standups/${id}`,
+          method: 'PATCH',
+          body: data,
+        }, api, extraOptions);
+        
+        if (result.error) {
+          return { error: result.error };
+        }
+        
+        return { data: result.data as Standup };
+      },
+      invalidatesTags: ['Standups'],
+    }),
     
     getUserStandup: builder.query<Standup | null, StandupQuery | void>({
       queryFn: async (params, api, extraOptions) => {
@@ -97,5 +114,6 @@ export const standupsApi = baseApi.injectEndpoints({
 export const {
   useGetStandupsQuery,
   useCreateStandupMutation,
+  useUpdateStandupMutation,
   useGetUserStandupQuery,
 } = standupsApi;

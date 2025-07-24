@@ -4,13 +4,16 @@ import { StandupCard } from '../components/StandupCard';
 import { Dropdown } from '../components/ui/Dropdown';
 import { Icons } from '../components/Icons';
 import { useGetUserStandupQuery } from '../store/api/standups';
-import { useAppSelector } from '../store/hooks';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
+import { setEditingStandup } from '../store/slices/standupSlice';
+import type { Standup } from '../types/apiTypes';
 
 const sortOptions = [
   { value: 'newest', label: 'Newest' },
   { value: 'oldest', label: 'Oldest' }
 ];
 export default function HistoryPage() {
+  const dispatch = useAppDispatch();
   const [sortBy, setSortBy] = useState('newest');
   const { user: currentUser } = useAppSelector((state) => state.auth);
   const { userStandups } = useAppSelector((state) => state.users);
@@ -24,6 +27,11 @@ export default function HistoryPage() {
   const handleSortChange = (value: string) => {
     setSortBy(value);
     refetch();
+  };
+
+  // Handle edit standup
+  const handleEditStandup = (standup: Standup) => {
+    dispatch(setEditingStandup(standup));
   };
 
   // Calculate stats
@@ -110,7 +118,11 @@ export default function HistoryPage() {
             </div>
           ) : (
             userStandups.map((standup) => (
-              <StandupCard key={standup.id} standup={standup} />
+              <StandupCard 
+                key={standup.id} 
+                standup={standup} 
+                onEdit={handleEditStandup}
+              />
             ))
           )}
         </div>

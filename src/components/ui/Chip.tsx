@@ -4,9 +4,11 @@ interface ChipProps {
   label: string;
   size?: 'sm' | 'lg';
   variant?: 'default' | 'selected' | 'warning' | 'disabled';
+  onClick?: () => void;
+  className?: string;
 }
 
-export const Chip = ({ label, size = 'sm', variant = 'default' }: ChipProps) => {
+export const Chip = ({ label, size = 'sm', variant = 'default', onClick, className }: ChipProps) => {
   const baseStyles = 'inline-flex items-center justify-center rounded-full transition-all text-[rgb(var(--color-mono))] cursor-pointer select-none whitespace-nowrap';
   
   const sizeStyles = {
@@ -22,7 +24,10 @@ export const Chip = ({ label, size = 'sm', variant = 'default' }: ChipProps) => 
   };
   
   return (
-    <div className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]}`}>
+    <div 
+      className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className || ''}`}
+      onClick={onClick}
+    >
       {label}
     </div>
   );

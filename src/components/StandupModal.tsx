@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from './ui/Button';
 import { TextAarea } from './ui/TextArea';
 import { Avatar } from './ui/Avatar';
-import { useCreateStandupMutation } from '../store/api/standups';
+import { useCreateStandupMutation, useUpdateStandupMutation } from '../store/api/standups';
 import { useAppSelector } from '../store/hooks';
 import { standupSchema, type StandupFormData } from '../lib/validations/standup';
 import { getInitials } from '../utils/strings';
@@ -26,7 +26,14 @@ const quickTemplates = [
 
 export function StandupModal({ isOpen, onClose }: StandupModalProps) {
   const user = useAppSelector((state) => state.auth.user);
-  const [createStandup, { isLoading, isSuccess, error }] = useCreateStandupMutation();
+  const editingStandup = useAppSelector((state) => state.standup.editingStandup);
+  const [createStandup, { isLoading: isCreating, isSuccess: createSuccess, error: createError }] = useCreateStandupMutation();
+  const [updateStandup, { isLoading: isUpdating, isSuccess: updateSuccess, error: updateError }] = useUpdateStandupMutation();
+  
+  const isLoading = isCreating || isUpdating;
+  const isSuccess = createSuccess || updateSuccess;
+  const error = createError || updateError;
+  const isEditing = !!editingStandup;
 
   const {
     control,
@@ -39,20 +46,24 @@ export function StandupModal({ isOpen, onClose }: StandupModalProps) {
     resolver: yupResolver(standupSchema),
     mode: 'onChange',
     defaultValues: {
-      yesterday: '',
-      today: '',
-      blockers: 'None',
+      yesterday: editingStandup?.yesterday || '',
+      today: editingStandup?.today || '',
+      blockers: editingStandup?.blockers || 'None',
     }
   });
 
   const watchedValues = watch();
 
-  // Reset form when modal opens
+  // Reset form when modal opens or editing standup changes
   useEffect(() => {
     if (isOpen) {
-      reset();
+      reset({
+        yesterday: editingStandup?.yesterday || '',
+        today: editingStandup?.today || '',
+        blockers: editingStandup?.blockers || 'None',
+      });
     }
-  }, [isOpen, reset]);
+  }, [isOpen, editingStandup, reset]);
 
   // Close modal on successful submission
   useEffect(() => {
@@ -64,12 +75,21 @@ export function StandupModal({ isOpen, onClose }: StandupModalProps) {
   const onSubmit = async (data: StandupFormData) => {
     if (!user) return;
     
-    await createStandup({
+    const standupData = {
       yesterday: data.yesterday,
       today: data.today,
       blockers: data.blockers,
-      status: 'submitted',
-    });
+      status: 'submitted' as const,
+    };
+
+    if (isEditing && editingStandup) {
+      await updateStandup({
+        id: editingStandup.id,
+        data: standupData,
+      });
+    } else {
+      await createStandup(standupData);
+    }
   };
 
   const addTemplate = (template: string, field: 'yesterday' | 'today') => {
@@ -97,7 +117,7 @@ export function StandupModal({ isOpen, onClose }: StandupModalProps) {
         {/* Header */}
         <div className="bg-[rgb(var(--color-primary))] text-white p-4">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold">Daily Standup</h2>
+            <h2 className="text-lg font-semibold">{isEditing ? 'Edit' : 'Daily'} Standup</h2>
             <Button
               variant="primary"
               size="sm"
@@ -258,7 +278,7 @@ export function StandupModal({ isOpen, onClose }: StandupModalProps) {
                   </div>
                 ) : (
                   <div className="flex items-center">
-                    Submit
+                    {isEditing ? 'Update' : 'Submit'}
                   </div>
                 )}
               </Button>

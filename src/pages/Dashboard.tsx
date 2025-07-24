@@ -8,15 +8,16 @@ import { BlockersList } from '../components/BlockersList';
 import { useGetStandupsQuery } from '../store/api/standups';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { Icons } from '../components/Icons';
-import { openStandupModal } from '../store/slices/standupSlice';
-import { getDateToday, getLocalDateString } from '../utils/date';
+import { openStandupModal, setEditingStandup } from '../store/slices/standupSlice';
+import { getDateToday, getUTCDateString } from '../utils/date';
 import { useState } from 'react';
 import { useGetUsersQuery } from '../store/api/users';
 import { QuickStats } from '../components/QuickStats';
+import type { Standup } from '../types/apiTypes';
 
 export default function DashboardPage() {
   const dispatch = useAppDispatch();
-  const [dateQuery, setDateQuery] = useState(getLocalDateString());
+  const [dateQuery, setDateQuery] = useState(getUTCDateString());
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [selectedUserId, setSelectedUserId] = useState<string>('');
   
@@ -50,7 +51,7 @@ export default function DashboardPage() {
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
     if (date) {
-      const newDateQuery = getLocalDateString(date);
+      const newDateQuery = getUTCDateString(date);
       setDateQuery(newDateQuery);
       // Force refetch if the date is the same (user selected current date again)
       if (newDateQuery === dateQuery) {
@@ -62,6 +63,13 @@ export default function DashboardPage() {
   // Handle user filter change
   const handleUserFilterChange = (userId: string) => {
     setSelectedUserId(userId);
+  };
+
+  // Handle edit standup
+  const handleEditStandup = (standup: Standup) => {
+    if (currentUser && (currentUser.id === standup.userId || currentUser._id === standup.userId)) {
+      dispatch(setEditingStandup(standup));
+    }
   };
 
   if (isLoading || isUsersLoading) {
@@ -92,7 +100,7 @@ export default function DashboardPage() {
         {/* Call to Action for Current User - Only show for today's date */}
         {!hasSubmittedToday && currentUser && 
          (!selectedUserId || selectedUserId === currentUser.id || selectedUserId === currentUser._id) &&
-         dateQuery === getLocalDateString() && (
+         dateQuery === getUTCDateString() && (
           <div className="mb-6 border-2 border-green-200 bg-gradient-to-r from-green-100 to-blue-100 rounded-xl shadow-sm">
             <div className="p-6">
               <div className="flex items-center justify-between">
@@ -147,7 +155,11 @@ export default function DashboardPage() {
             </div>
 
             {standups.map((standup) => (
-              <StandupCard key={standup.id} standup={standup} />
+              <StandupCard 
+                key={standup.id} 
+                standup={standup} 
+                onEdit={handleEditStandup}
+              />
             ))}
 
             {standups.length === 0 && (

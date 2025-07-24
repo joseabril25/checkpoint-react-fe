@@ -253,6 +253,7 @@ export interface StandupState {
     hasMore: boolean;
   } | null;
   isStandupModalOpen: boolean;
+  editingStandup: Standup | null;
 }
 
 export interface UsersState {

@@ -6,7 +6,12 @@ import { Chip } from './ui/Chip';
 import Markdown from 'react-markdown';
 
 
-export const StandupCard = ({ standup }: { standup: Standup }) => {
+interface StandupCardProps {
+  standup: Standup;
+  onEdit?: (standup: Standup) => void;
+}
+
+export const StandupCard = ({ standup, onEdit }: StandupCardProps) => {
   const dateToday = getLocalDateString();
   const standupDate = getLocalDateString(new Date(standup.createdAt));
   
@@ -37,11 +42,13 @@ export const StandupCard = ({ standup }: { standup: Standup }) => {
               />
             )}
             {
-              dateToday === standupDate && (
+              dateToday === standupDate && onEdit && (
                 <Chip
                   variant="default"
                   size="sm"
                   label='Edit'
+                  onClick={() => onEdit(standup)}
+                  className="cursor-pointer hover:bg-gray-100"
                 />
               )
             }

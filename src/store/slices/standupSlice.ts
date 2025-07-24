@@ -12,6 +12,7 @@ const initialState: StandupState = {
     hasMore: false
   },
   isStandupModalOpen: false,
+  editingStandup: null,
 }
 
 const standupSlice = createSlice({
@@ -38,6 +39,13 @@ const standupSlice = createSlice({
     },
     closeStandupModal: (state) => {
       state.isStandupModalOpen = false;
+      state.editingStandup = null;
+    },
+    setEditingStandup: (state, action: PayloadAction<Standup | null>) => {
+      state.editingStandup = action.payload;
+      if (action.payload) {
+        state.isStandupModalOpen = true;
+      }
     },
   }
 })
@@ -47,7 +55,8 @@ export const {
   setCurrentStandup,
   setPagination,
   openStandupModal,
-  closeStandupModal
+  closeStandupModal,
+  setEditingStandup
 } = standupSlice.actions
 
 export const standupReducer = standupSlice.reducer
