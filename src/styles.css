@@ -1,0 +1,257 @@
+@import url('https://fonts.googleapis.com/css2?family=Gabarito:wght@400..900&display=swap');
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-primary: 6 107 228;
+    --color-primary-light: 10 121 255;
+    --color-primary-dark: 4 60 129;
+    --color-error: 255 40 25;
+    --color-neutral: 96 100 118;
+    --color-mono: 3 25 52;
+    --color-warning: 255 147 65;
+    --color-border: 149 153 169;
+    --color-surface: 32 36 44;
+    --color-bg-disabled: 232 233 237;
+    --color-bg-table: 240 241 242;
+    --color-bg-table-hover: 205 227 255;
+    --color-bg-body: 232 232 237;
+  }
+
+  body {
+    font-family: 'Gabarito', sans-serif;
+    background-color: white;
+    color: var(--color-mono);
+    margin: 0;
+    padding: 0;
+    background-color: rgb(var(--color-bg-body));
+  }
+
+  h3 {
+    font-weight: 700;
+    font-style: bold;
+    font-size: 28px;
+    color: var(--color-mono);
+  }
+  h4 {
+    font-weight: 700;
+    font-style: bold;
+    font-size: 24px;
+    color: var(--color-mono);
+  }
+  h5 {
+    font-weight: 700;
+    font-style: bold;
+    font-size: 20px;
+    color: var(--color-mono);
+  }
+
+  p {
+    font-weight: 400;
+    font-style: normal;
+    font-size: 14px;
+    color: var(--color-mono);
+    margin: 0;
+  }
+
+  input {
+    /* width: 188px; */
+    height: 40px;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: 'Gabarito', sans-serif;
+    border: 1px solid rgb(var(--color-border));
+    transition: all 0.2s;
+    outline: none;
+    background-color: white;
+    color: rgb(var(--color-surface));
+  }
+
+  label {
+    font-family: 'Gabarito', sans-serif;
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgb(var(--color-neutral));
+    margin-bottom: 8px;
+  }
+  
+  input:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  textarea {
+    /* width: 244px; */
+    height: 120px;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: 'Gabarito', sans-serif;
+    border: 1px solid rgb(var(--color-border));
+    transition: all 0.2s;
+    outline: none;
+    background-color: white;
+    color: rgb(var(--color-surface));
+    resize: none;
+  }
+  
+  textarea:focus {
+    outline: none;
+    box-shadow: none;
+  }
+  
+  /* Ensure all buttons use the same font */
+  button {
+    font-family: 'Gabarito', sans-serif;
+  }
+  
+  /* Dropdown button styles - inherits from input styles */
+  button[type="button"].dropdown-trigger {
+    font-family: inherit;
+    border-radius: 0;
+  }
+
+  /* Custom react-datepicker styles */
+  .react-datepicker {
+    font-family: 'Gabarito', sans-serif;
+    border: 1px solid rgb(var(--color-border));
+    border-radius: 6px;
+    box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.2), 2px 2px 2px 0px rgba(0, 0, 0, 0.16);
+  }
+
+  .react-datepicker__header {
+    background-color: rgb(var(--color-primary));
+    border-bottom: 1px solid rgb(var(--color-border));
+    border-radius: 6px 6px 0 0;
+  }
+
+  .react-datepicker__current-month {
+    color: white;
+    font-weight: 600;
+  }
+
+  .react-datepicker__day-name {
+    color: white;
+    font-weight: 500;
+  }
+
+  .react-datepicker__navigation {
+    top: 8px;
+  }
+
+  .react-datepicker__navigation--previous {
+    left: 8px;
+  }
+
+  .react-datepicker__navigation--next {
+    right: 8px;
+  }
+
+  .react-datepicker__day {
+    color: rgb(var(--color-mono));
+    font-size: 14px;
+  }
+
+  .react-datepicker__day:hover {
+    background-color: rgba(205, 227, 255, 1);
+    border-radius: 4px;
+  }
+
+  .react-datepicker__day--selected {
+    background-color: rgb(var(--color-primary));
+    color: white;
+    border-radius: 4px;
+  }
+
+  .react-datepicker__day--today {
+    background-color: rgb(var(--color-primary-light));
+    color: white;
+    border-radius: 4px;
+  }
+
+  /* Table styles */
+  th {
+    min-width: 200px;
+    min-height: 72px;
+    padding: 16px 24px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgb(var(--color-mono));
+    background-color: rgb(var(--color-bg-table));
+    border-right: 1px solid rgb(var(--color-border));
+    border-bottom: 1px solid rgb(var(--color-border));
+  }
+
+  td {
+    min-width: 200px;
+    min-height: 204px;
+    padding: 24px;
+    vertical-align: top;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgb(var(--color-mono));
+    border-right: 1px solid rgb(var(--color-border));
+    border-bottom: 1px solid rgb(var(--color-border));
+    background-color: white;
+    vertical-align: bottom;
+  }
+
+  td:nth-child(even) {
+    background-color: rgb(var(--color-bg-table)); 
+  }
+
+  td:hover {
+    background-color: rgb(var(--color-bg-table-hover) );
+  }
+
+  /* No hover effect for first column (provider column) */
+  td:first-child:hover {
+    background-color: white;
+  }
+}
+
+@layer utilities {
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  .animate-slideIn {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .animate-scaleIn {
+    animation: scaleIn 0.2s ease-out;
+  }
+}
