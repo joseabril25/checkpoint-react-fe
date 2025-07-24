@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { useMeQuery } from '../../store/api/auth';
+import { useMeQuery } from '../store/api/auth';
 
 export function PublicRoute() {
   const { data: user, isLoading } = useMeQuery();
