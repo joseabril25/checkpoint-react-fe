@@ -1,10 +1,10 @@
 import { baseApi, baseQuery } from ".";
-import type { AuthResponse, LoginRequest, RegisterRequest, User } from "../../types/apiTypes";
+import type { ApiResponse, LoginRequest, RegisterRequest, User } from "../../types/apiTypes";
 import { setUser, clearUser } from "../slices/authSlice";
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    login: builder.mutation<AuthResponse, LoginRequest>({
+    login: builder.mutation<ApiResponse, LoginRequest>({
       queryFn: async (credentials, api, extraOptions) => {
         const result = await baseQuery({
           url: '/auth/login',
@@ -16,20 +16,18 @@ export const authApi = baseApi.injectEndpoints({
           return { error: result.error };
         }
         
-        const data = result.data as AuthResponse;
+        const data = result.data as ApiResponse<User>;
         
         // Dispatch setUser action to update auth state
         api.dispatch(setUser({ 
-          user: data.user,
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken
+          user: data.data as User,
         }));
         
         return { data };
       },
       invalidatesTags: ['Auth'],
     }),
-    register: builder.mutation<AuthResponse, RegisterRequest>({
+    register: builder.mutation<ApiResponse, RegisterRequest>({
       queryFn: async (credentials, api, extraOptions) => {
         const result = await baseQuery({
           url: '/auth/register',
@@ -41,13 +39,11 @@ export const authApi = baseApi.injectEndpoints({
           return { error: result.error };
         }
         
-        const data = result.data as AuthResponse;
+        const data = result.data as ApiResponse<User>;
         
         // Dispatch setUser action to update auth state
-        api.dispatch(setUser({ 
-          user: data.user,
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken
+        api.dispatch(setUser({
+          user: data.data as User,
         }));
         
         return { data };
@@ -72,7 +68,7 @@ export const authApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ['Auth', 'User'],
     }),
-    me: builder.query<User, void>({
+    me: builder.query<ApiResponse, void>({
       queryFn: async (_, api, extraOptions) => {
         const result = await baseQuery({
           url: '/auth/me',
@@ -84,10 +80,11 @@ export const authApi = baseApi.injectEndpoints({
           return { error: result.error };
         }
         
-        const data = result.data as User;
+        const data = result.data as ApiResponse<User>;
+        console.log("🚀 ~ data:", data)
         
         // Update user state if me query succeeds
-        api.dispatch(setUser({ user: data }));
+        api.dispatch(setUser({ user: data.data as User }));
         
         return { data };
       },

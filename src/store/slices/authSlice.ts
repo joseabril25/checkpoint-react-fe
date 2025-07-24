@@ -6,8 +6,6 @@ import type { AuthState, User } from "../../types/apiTypes";
 const initialState: AuthState = {
   user: null as User | null,
   isAuthenticated: true,
-  accessToken: null,
-  refreshToken: null,
 }
 
 const authSlice = createSlice({
@@ -17,18 +15,14 @@ const authSlice = createSlice({
 
     setUser: (
       state,
-      { payload: { user, accessToken, refreshToken } }: PayloadAction<{ user: User, accessToken?: string | null, refreshToken?: string | null }>,
+      { payload: { user } }: PayloadAction<{ user: User, accessToken?: string | null, refreshToken?: string | null }>,
     ) => {
       state.user = user
       state.isAuthenticated = true
-      state.accessToken = accessToken || null
-      state.refreshToken = refreshToken || null
     },
     clearUser: (state) => {
       state.user = null
       state.isAuthenticated = false
-      state.accessToken = null
-      state.refreshToken = null
     },
   }
 })

@@ -10,7 +10,8 @@ const initialState: StandupState = {
     total: 0,
     totalPages: 0,
     hasMore: false
-  }
+  },
+  isStandupModalOpen: false,
 }
 
 const standupSlice = createSlice({
@@ -32,13 +33,21 @@ const standupSlice = createSlice({
     }>) => {
       state.pagination = action.payload;
     },
+    openStandupModal: (state) => {
+      state.isStandupModalOpen = true;
+    },
+    closeStandupModal: (state) => {
+      state.isStandupModalOpen = false;
+    },
   }
 })
 
 export const {
   setStandups,
   setCurrentStandup,
-  setPagination
+  setPagination,
+  openStandupModal,
+  closeStandupModal
 } = standupSlice.actions
 
 export const standupReducer = standupSlice.reducer

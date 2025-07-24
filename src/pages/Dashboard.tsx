@@ -1,13 +1,14 @@
-import { useState } from 'react';
 import { RootLayout } from '../layouts/RootLayout';
 import { Button } from '../components/ui/Button';
 import { StandupCard } from '../components/StandupCard';
 import { PendingMembers } from '../components/PendingMembers';
 import { BlockersList } from '../components/BlockersList';
 import { useGetStandupsQuery } from '../store/api/standups';
-import { useAppSelector } from '../store/hooks';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
 import type { Standup, StandupStatus } from '../types/apiTypes';
 import { Icons } from '../components/Icons';
+import { openStandupModal } from '../store/slices/standupSlice';
+import { getDateToday } from '../utils/date';
 
 // Mock data for now - will be replaced with real API data
 const mockTeamData: Standup[] = [
@@ -98,7 +99,7 @@ const mockPendingMembers = [
 ];
 
 export default function DashboardPage() {
-  const [isStandupModalOpen, setIsStandupModalOpen] = useState(false);
+  const dispatch = useAppDispatch();
   const { isLoading } = useGetStandupsQuery();
   const { standups, currentStandup } = useAppSelector((state) => state.standup);
   
@@ -108,13 +109,6 @@ export default function DashboardPage() {
   const membersWithBlockers = standups.filter((standup) => standup.blockers && standup.blockers.length > 0);
   
   const hasSubmittedToday = !!currentStandup;
-
-  const today = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
 
   if (isLoading) {
     return (
@@ -133,7 +127,7 @@ export default function DashboardPage() {
           <div>
             <div className="flex items-center space-x-3 mb-2">
               <Icons name="calendar" width={32} height={32} />
-              <h1 className="text-2xl font-bold text-gray-900">{today}</h1>
+              <h1 className="text-2xl font-bold text-gray-900">{getDateToday()}</h1>
             </div>
             <p className="text-gray-600">
               {standups.length} of {standups.length + standups.length} team members have submitted their standup
@@ -151,7 +145,7 @@ export default function DashboardPage() {
                   <p className="text-gray-600">Let your team know what you're working on today</p>
                 </div>
                 <Button
-                  onClick={() => setIsStandupModalOpen(true)}
+                  onClick={() => dispatch(openStandupModal())}
                   variant="primary"
                   size="lg"
                 >
@@ -211,21 +205,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Standup Modal */}
-      {isStandupModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 border-0">
-            <h2 className="text-xl font-bold mb-4 text-gray-900">Submit Standup</h2>
-            <p className="text-gray-600 mb-4">Standup modal will be implemented next.</p>
-            <Button 
-              onClick={() => setIsStandupModalOpen(false)} 
-              variant="primary"
-            >
-              Close
-            </Button>
-          </div>
-        </div>
-      )}
     </RootLayout>
   );
 }

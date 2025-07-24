@@ -228,7 +228,7 @@ export interface StandupForm {
   yesterday: string;
   today: string;
   blockers: string;
-  status: StandupStatus;
+  status?: StandupStatus;
   date?: string;
 }
 
@@ -238,8 +238,6 @@ export interface StandupForm {
 
 export interface AuthState {
   user: User | null;
-  accessToken: string | null;
-  refreshToken: string | null;
   isAuthenticated: boolean;
 }
 
@@ -253,6 +251,7 @@ export interface StandupState {
     totalPages: number;
     hasMore: boolean;
   } | null;
+  isStandupModalOpen: boolean;
 }
 
 export interface UserState {
