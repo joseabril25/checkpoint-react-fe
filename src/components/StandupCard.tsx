@@ -1,10 +1,13 @@
 import type { Standup } from '../types/apiTypes';
 import { getInitials } from '../utils/strings';
-import { formatDate } from '../utils/date';
+import { formatDate, getLocalDateString } from '../utils/date';
 import { Avatar } from './ui/Avatar';
-import { Badge } from './ui/Badge';
+import { Chip } from './ui/Chip';
+
 
 export const StandupCard = ({ standup }: { standup: Standup }) => {
+  const dateToday = getLocalDateString();
+  const standupDate = getLocalDateString(new Date(standup.createdAt));
   
   return (
     <div className="border-0 shadow-xl bg-white/90 backdrop-blur-sm rounded-2xl hover:shadow-2xl transition-all duration-200">
@@ -26,19 +29,21 @@ export const StandupCard = ({ standup }: { standup: Standup }) => {
 
           <div className="flex items-center space-x-2">
             {standup.blockers && (
-              <Badge className="border-orange-200 text-orange-600 bg-orange-50">
-                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                </svg>
-                Blocker
-              </Badge>
+              <Chip
+                variant="warning"
+                size="sm"
+                label='Blocker'
+              />
             )}
-            <Badge className="bg-green-100 text-green-600 border-0">
-              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Done
-            </Badge>
+            {
+              dateToday === standupDate && (
+                <Chip
+                  variant="default"
+                  size="sm"
+                  label='Edit'
+                />
+              )
+            }
           </div>
         </div>
       </div>

@@ -77,8 +77,6 @@ export function StandupModal({ isOpen, onClose }: StandupModalProps) {
     setValue(field, newValue);
   };
 
-  
-
   if (!isOpen || !user) return null;
 
   return (

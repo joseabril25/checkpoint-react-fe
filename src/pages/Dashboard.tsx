@@ -9,14 +9,14 @@ import { useGetStandupsQuery } from '../store/api/standups';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { Icons } from '../components/Icons';
 import { openStandupModal } from '../store/slices/standupSlice';
-import { getDateToday } from '../utils/date';
+import { getDateToday, getLocalDateString } from '../utils/date';
 import { useState } from 'react';
 import { useGetUsersQuery } from '../store/api/users';
 import { QuickStats } from '../components/QuickStats';
 
 export default function DashboardPage() {
   const dispatch = useAppDispatch();
-  const [dateQuery, setDateQuery] = useState(new Date().toISOString().split('T')[0]);
+  const [dateQuery, setDateQuery] = useState(getLocalDateString());
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [selectedUserId, setSelectedUserId] = useState<string>('');
   
@@ -50,7 +50,7 @@ export default function DashboardPage() {
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
     if (date) {
-      const newDateQuery = date.toISOString().split('T')[0];
+      const newDateQuery = getLocalDateString(date);
       setDateQuery(newDateQuery);
       // Force refetch if the date is the same (user selected current date again)
       if (newDateQuery === dateQuery) {
@@ -89,9 +89,10 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Call to Action for Current User */}
+        {/* Call to Action for Current User - Only show for today's date */}
         {!hasSubmittedToday && currentUser && 
-         (!selectedUserId || selectedUserId === currentUser.id || selectedUserId === currentUser._id) && (
+         (!selectedUserId || selectedUserId === currentUser.id || selectedUserId === currentUser._id) &&
+         dateQuery === getLocalDateString() && (
           <div className="mb-6 border-2 border-green-200 bg-gradient-to-r from-green-100 to-blue-100 rounded-xl shadow-sm">
             <div className="p-6">
               <div className="flex items-center justify-between">
