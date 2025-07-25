@@ -1,7 +1,26 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+
 import { Icons } from './Icons'
+import { DropdownMenu, DropdownMenuItem } from './ui/DropdownMenu'
+import { Avatar } from './ui/Avatar'
+import { useAppSelector } from '../store/hooks'
+import { useLogoutMutation } from '../store/api/auth'
+import { getInitials } from '../utils/strings'
 
 export const Navbar = () => {
+  const navigate = useNavigate();
+  const { user } = useAppSelector((state) => state.auth);
+  const [logout] = useLogoutMutation();
+
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap();
+      navigate('/login', { replace: true });
+    } catch (error) {
+      // Even if logout fails, navigate to login
+      navigate('/login', { replace: true });
+    }
+  };
 
   return (
     <nav className="bg-[rgb(var(--color-primary))] px-4 py-2 sticky top-0 z-50">
@@ -22,12 +41,27 @@ export const Navbar = () => {
           </Link>
         </nav>
         <div className="hidden md:block">
-          <div 
-            className="bg-white rounded-full p-2 flex items-center justify-center m-w-[32px] cursor-pointer hover:bg-gray-100 transition-colors"
-            title="Account Settings"
+          <DropdownMenu
+            align="end"
+            trigger={
+              <div className="bg-white rounded-full p-1 cursor-pointer hover:bg-gray-100 transition-colors">
+                <Avatar
+                  src={user?.profileImage}
+                  alt={user?.name}
+                  initials={getInitials(user?.name || '')}
+                  size="sm"
+                  className="bg-purple-100 text-purple-600"
+                />
+              </div>
+            }
           >
-            <Icons name="account" color='rgb(var(--color-primary))' width={24} height={24} />
-          </div>
+            <DropdownMenuItem onClick={() => console.log('Settings clicked')}>
+              Settings
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenu>
         </div>
       </div>
     </nav>

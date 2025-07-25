@@ -57,16 +57,16 @@ export const authApi = baseApi.injectEndpoints({
           method: 'POST',
         }, api, extraOptions);
         
+        // Clear user state regardless of API response
+        api.dispatch(clearUser());
+        
         if (result.error) {
           return { error: result.error };
         }
         
-        // Clear user state on logout
-        api.dispatch(clearUser());
-        
         return { data: undefined };
       },
-      invalidatesTags: ['Auth'],
+      invalidatesTags: ['Auth', 'Users', 'Standups'],
     }),
     me: builder.query<ApiResponse, void>({
       queryFn: async (_, api, extraOptions) => {

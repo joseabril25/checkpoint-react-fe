@@ -1,7 +1,16 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+const getBaseUrl = () => {
+  // In development, use proxy
+  if (import.meta.env.DEV) {
+    return '/api/v1';
+  }
+  // In production, use full URL
+  return `${import.meta.env.VITE_API_URL}/api/v1`;
+};
+
 export const baseQuery = fetchBaseQuery({
-  baseUrl: '/api/v1',
+  baseUrl: getBaseUrl(),
   credentials: 'include',
 });
 
