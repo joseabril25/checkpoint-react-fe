@@ -40,7 +40,7 @@ export const Navbar = () => {
             History
           </Link>
         </nav>
-        <div className="hidden md:block">
+        <div className="md:block">
           <DropdownMenu
             align="end"
             trigger={
@@ -55,9 +55,6 @@ export const Navbar = () => {
               </div>
             }
           >
-            <DropdownMenuItem onClick={() => console.log('Settings clicked')}>
-              Settings
-            </DropdownMenuItem>
             <DropdownMenuItem onClick={handleLogout}>
               Sign out
             </DropdownMenuItem>
