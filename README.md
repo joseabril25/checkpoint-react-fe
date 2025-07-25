@@ -2,6 +2,12 @@
 
 A modern React TypeScript application for managing daily standup meetings with team collaboration features.
 
+## 🌐 Live Demo
+
+**[View Live Application](https://checkpoint-react-fe.vercel.app)**
+
+> **Note**: The application is deployed on Vercel with backend services hosted on Railway.
+
 ## 🚀 Features
 
 ### Authentication
@@ -161,6 +167,28 @@ src/
 - **AuthGuard** - Protects authenticated routes
 - **PublicRoute** - Handles unauthenticated access
 - **RootLayout** - Common layout for protected pages
+
+## 🚀 Deployment
+
+The application is deployed using modern cloud platforms:
+
+### Production Environment
+- **Frontend**: [Vercel](https://vercel.com) - `https://checkpoint-react-fe.vercel.app`
+- **Backend**: Railway (Node.js API)
+- **Database**: MongoDB Atlas
+
+### Deployment Configuration
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+- **Node Version**: 18.x
+- **Environment Variables**: Configured via Vercel dashboard
+
+### Key Deployment Features
+- **Automatic Deployments** from Git commits
+- **Preview Deployments** for pull requests  
+- **Custom Domain** support
+- **SSL/TLS** certificate auto-provisioning
+- **Global CDN** for optimal performance
 
 ## 🔧 Development Setup
 

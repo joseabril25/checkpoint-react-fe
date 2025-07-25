@@ -7,8 +7,10 @@ export function AuthGuard() {
   const location = useLocation();
   const { user: currentUser } = useAppSelector((state) => state.auth);
   
-  // Always run useMeQuery to verify auth state
-  const { isLoading, isError } = useMeQuery();
+  // Skip useMeQuery if user is explicitly null (logged out)
+  const { isLoading, isError } = useMeQuery(undefined, {
+    skip: currentUser === null
+  });
 
   if (isLoading) {
     return (
