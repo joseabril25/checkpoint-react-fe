@@ -67,9 +67,14 @@ export default function DashboardPage() {
 
   // Handle edit standup
   const handleEditStandup = (standup: Standup) => {
-    if (currentUser && (currentUser.id === standup.userId || currentUser._id === standup.userId)) {
-      dispatch(setEditingStandup(standup));
-    }
+    dispatch(setEditingStandup(standup));
+  };
+
+  // Check if user can edit a standup
+  const canEditStandup = (standup: Standup): boolean => {
+    return !!(currentUser && 
+      (currentUser.id === standup.userId || currentUser._id === standup.userId) &&
+      dateQuery === getUTCDateString());
   };
 
   if (isLoading || isUsersLoading) {
@@ -159,6 +164,7 @@ export default function DashboardPage() {
                 key={standup.id} 
                 standup={standup} 
                 onEdit={handleEditStandup}
+                canEdit={canEditStandup(standup)}
               />
             ))}
 

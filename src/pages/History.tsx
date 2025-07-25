@@ -34,6 +34,13 @@ export default function HistoryPage() {
     dispatch(setEditingStandup(standup));
   };
 
+  // Check if user can edit a standup (only current day standups)
+  const canEditStandup = (standup: Standup) => {
+    const today = new Date().toISOString().split('T')[0];
+    const standupDate = new Date(standup.createdAt).toISOString().split('T')[0];
+    return today === standupDate;
+  };
+
   // Calculate stats
   const entriesWithBlockers = userStandups.filter((e) => e.blockers && e.blockers.length > 0).length;
   const avgBlockers = userStandups.length > 0 ? (entriesWithBlockers / userStandups.length).toFixed(1) : 0;
@@ -122,6 +129,7 @@ export default function HistoryPage() {
                 key={standup.id} 
                 standup={standup} 
                 onEdit={handleEditStandup}
+                canEdit={canEditStandup(standup)}
               />
             ))
           )}

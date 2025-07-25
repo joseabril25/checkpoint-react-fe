@@ -1,6 +1,6 @@
 import type { Standup } from '../types/apiTypes';
 import { getInitials } from '../utils/strings';
-import { formatDate, getLocalDateString } from '../utils/date';
+import { formatDate } from '../utils/date';
 import { Avatar } from './ui/Avatar';
 import { Chip } from './ui/Chip';
 import Markdown from 'react-markdown';
@@ -9,11 +9,10 @@ import Markdown from 'react-markdown';
 interface StandupCardProps {
   standup: Standup;
   onEdit?: (standup: Standup) => void;
+  canEdit?: boolean;
 }
 
-export const StandupCard = ({ standup, onEdit }: StandupCardProps) => {
-  const dateToday = getLocalDateString();
-  const standupDate = getLocalDateString(new Date(standup.createdAt));
+export const StandupCard = ({ standup, onEdit, canEdit }: StandupCardProps) => {
   
   return (
     <div className="border-0 shadow-xl bg-white/90 backdrop-blur-sm rounded-2xl hover:shadow-2xl transition-all duration-200">
@@ -42,7 +41,7 @@ export const StandupCard = ({ standup, onEdit }: StandupCardProps) => {
               />
             )}
             {
-              dateToday === standupDate && onEdit && (
+              canEdit && onEdit && (
                 <Chip
                   variant="default"
                   size="sm"
